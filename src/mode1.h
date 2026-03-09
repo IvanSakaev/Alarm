@@ -108,7 +108,7 @@ public:
       }
       int out = (bliz_den - d_real) * 24 * 60;
       out += (hs - hours) * 60;
-      out += ms - minets;
+      out += ms - minutes;
       if (out <= 0)
       {
         char bliz_den_p = bliz_den;
@@ -127,7 +127,7 @@ public:
       }
       out = (bliz_den - d_real) * 24 * 60;
       out += (hs - hours) * 60;
-      out += ms - minets;
+      out += ms - minutes;
       if (bliz_den == 45)
       {
         return INT16_MAX;

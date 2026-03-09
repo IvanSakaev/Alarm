@@ -3,7 +3,7 @@ LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
 void setup() {
   lcd.begin(16,2);
-  bigNumbersLcd.intNumbers();
+  bigNumbersLcd.initNumbers();
 }
 
 void loop()

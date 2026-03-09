@@ -28,7 +28,7 @@ private:
 public:
   bigNumbers(L *_lcd);
   void printNumber(unsigned char n, unsigned char posx, unsigned char posy = 0);
-  void intNumbers();
+  void initNumbers();
 };
 
 #include "bigNumbers.cpp"

@@ -8,7 +8,7 @@ byte doubledot[8] = {
     0b01110,
     0b00000};
 
-byte uperrow[8] = {
+byte uparrow[8] = {
     0b00100,
     0b01110,
     0b10101,
@@ -18,7 +18,7 @@ byte uperrow[8] = {
     0b00100,
     0b00100};
 
-byte lefterrow[8] = {
+byte leftarrow[8] = {
     0b00000,
     0b00100,
     0b01000,

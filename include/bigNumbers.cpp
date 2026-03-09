@@ -20,7 +20,7 @@ void bigNumbers<L>::printNumber(unsigned char n, unsigned char posx, unsigned ch
 }
 
 template <class L>
-void bigNumbers<L>::intNumbers()
+void bigNumbers<L>::initNumbers()
 {
   uint8_t temp[8];
   for (size_t i = 2; i < 8; ++i)
