@@ -248,12 +248,12 @@ signed char mode1(bool perex)
     if (enc.isLeft())
     {
       selected--;
-      enc_show.setTimeout(250 >> DELETEL);
+      enc_show.setTimeout(250);
     }
     if (enc.isRight())
     {
       selected++;
-      enc_show.setTimeout(250 >> DELETEL);
+      enc_show.setTimeout(250);
     }
     if (selected < 0)
     {
@@ -296,17 +296,17 @@ signed char mode1(bool perex)
       if (mode_setting == 0)
       {
         alar[selected].hs--;
-        enc_show.setTimeout(250 >> DELETEL);
+        enc_show.setTimeout(250);
       }
       else if (mode_setting == 1)
       {
         alar[selected].ms--;
-        enc_show.setTimeout(250 >> DELETEL);
+        enc_show.setTimeout(250);
       }
       else if (mode_setting == 2)
       {
         alar[selected].ds[selected_day] = !alar[selected].ds[selected_day];
-        enc_show.setTimeout(250 >> DELETEL);
+        enc_show.setTimeout(250);
       }
     }
     else if (enc.isRight())
@@ -314,17 +314,17 @@ signed char mode1(bool perex)
       if (mode_setting == 0)
       {
         alar[selected].hs++;
-        enc_show.setTimeout(250 >> DELETEL);
+        enc_show.setTimeout(250);
       }
       else if (mode_setting == 1)
       {
         alar[selected].ms++;
-        enc_show.setTimeout(250 >> DELETEL);
+        enc_show.setTimeout(250);
       }
       else if (mode_setting == 2)
       {
         alar[selected].ds[selected_day] = !alar[selected].ds[selected_day];
-        enc_show.setTimeout(250 >> DELETEL);
+        enc_show.setTimeout(250);
       }
     }
 

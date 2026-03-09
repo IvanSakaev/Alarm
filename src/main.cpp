@@ -7,7 +7,6 @@
 #include <GyverPower.h>
 #include <EEPROM.h>
 
-#define DELETEL 0
 #define TONE_PIN 10
 
 LiquidCrystal_I2C lcd(0x27, 20, 4);
@@ -34,10 +33,10 @@ bool wokeUpper()
   {
     lcd.backlight();
     isBacklight = true;
-    sleeper.setInterval(30000 >> DELETEL);
+    sleeper.setInterval(30000);
     return false;
   }
-  sleeper.setInterval(30000 >> DELETEL);
+  sleeper.setInterval(30000);
   return true;
 }
 
@@ -82,22 +81,22 @@ void setup()
   bigNumbersLcd.intNumbers();
 
   //* buttons and encoder
-  butt_settings.setTimeout(1000 >> DELETEL);
+  butt_settings.setTimeout(1000);
   butt_mode.setTickMode(AUTO);
-  butt_mode.setDebounce(20 >> DELETEL);
+  butt_mode.setDebounce(20);
   butt_settings.setTickMode(AUTO);
-  butt_settings.setDebounce(20 >> DELETEL);
-  sensor.setDebounce(50 >> DELETEL);
-  sensor.setTimeout(800 >> DELETEL);
-  sensor.setClickTimeout(1000 >> DELETEL);
+  butt_settings.setDebounce(20);
+  sensor.setDebounce(50);
+  sensor.setTimeout(800);
+  sensor.setClickTimeout(1000);
   sensor.setType(HIGH_PULL);
   sensor.setDirection(NORM_CLOSE);
   enc.setTickMode(AUTO);
 
   //* timers
-  enc_show.setTimeout(250 >> DELETEL);
+  enc_show.setTimeout(250);
   enc_show.reset();
-  time.setInterval(60000 >> DELETEL);
+  time.setInterval(60000);
   wokeUpper();
 
   //* power
@@ -180,7 +179,7 @@ void loop()
         if (alar[(int)i].bringin_on)
         {
           wokeUpper();
-          melod.setTimeout(100 << DELETEL);
+          melod.setTimeout(100);
           alar[(int)i].bringin_on = false;
           theAlarm = i;
           break;

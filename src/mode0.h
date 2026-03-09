@@ -185,17 +185,17 @@ signed char mode0(signed char &minets,
       if (mode_setting == 0)
       {
         hours_set--;
-        enc_show.setTimeout(250 >> DELETEL);
+        enc_show.setTimeout(250);
       }
       else if (mode_setting == 1)
       {
         minets_set--;
-        enc_show.setTimeout(250 >> DELETEL);
+        enc_show.setTimeout(250);
       }
       else if (mode_setting == 2)
       {
         days_set--;
-        enc_show.setTimeout(250 >> DELETEL);
+        enc_show.setTimeout(250);
       }
     }
     else if (enc.isRight())
@@ -203,17 +203,17 @@ signed char mode0(signed char &minets,
       if (mode_setting == 0)
       {
         hours_set++;
-        enc_show.setTimeout(250 >> DELETEL);
+        enc_show.setTimeout(250);
       }
       else if (mode_setting == 1)
       {
         minets_set++;
-        enc_show.setTimeout(250 >> DELETEL);
+        enc_show.setTimeout(250);
       }
       else if (mode_setting == 2)
       {
         days_set++;
-        enc_show.setTimeout(250 >> DELETEL);
+        enc_show.setTimeout(250);
       }
     }
 
