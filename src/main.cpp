@@ -97,7 +97,7 @@ void setup()
   }
 
   //* timers
-  time.start((61 - seconds) * 1000, GTMode::Timeout);
+  time.start((61 - seconds) * 1000UL, GTMode::Timeout);
   wokeUpper();
 
   //* buttons and encoder
@@ -130,12 +130,13 @@ void loop()
     DateTime now_rtc = rtc.now();
     if (now_rtc.minute() != now.minutes || now_rtc.hour() != now.hours || now_rtc.dayOfTheWeek() != now.weekday)
     {
-      uint8_t seconds = now.fromDateTime(now_rtc);
-      time.start((61 - seconds) * 1000, GTMode::Timeout);
+      now.fromDateTime(now_rtc);
       time_changed = true;
       ee_save0();
       // TODO: check if alarm is bringing
     }
+    uint8_t seconds = now_rtc.second();
+    time.start((61 - seconds) * 1000UL, GTMode::Timeout);
   }
 
   bool mode_changed = false;
