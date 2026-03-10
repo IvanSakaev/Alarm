@@ -1,3 +1,20 @@
+void ee_save0()
+{
+  // TODO: save time to EEPROM
+  EEPROM.put(10, now.minutes);
+  EEPROM.put(11, now.hours);
+  EEPROM.put(12, now.weekday);
+}
+
+void ee_load0()
+{
+  // TODO: load time from EEPROM
+  EEPROM.get(10, now.minutes);
+  EEPROM.get(11, now.hours);
+  EEPROM.get(12, now.weekday);
+  now.normalize(false);
+}
+
 signed char mode0(MyTime &now, bool mode_changed, bool time_changed)
 {
   static bool settings = false;
@@ -113,7 +130,7 @@ signed char mode0(MyTime &now, bool mode_changed, bool time_changed)
         }
       }
     }
-    setting_now.normalize();
+    setting_now.normalize(false);
 
     if (updateDisplay)
     {

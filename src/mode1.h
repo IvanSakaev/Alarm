@@ -1,3 +1,20 @@
+void ee_load1()
+{
+  // for (char i = 0; i < 4; i++)
+  // {
+  //   EEPROM.get(3 + (10 * i), alar[(int)i].hs);
+  //   EEPROM.get(4 + (10 * i), alar[(int)i].ms);
+  //   alar[(int)i].isBring = (bool)EEPROM[5 + (10 * i)];
+  //   for (int j = 0; j < 7; j++)
+  //   {
+  //     alar[(int)i].ds[j] = (bool)EEPROM[6 + (10 * i) + j];
+  //   }
+  //   alar[(int)i].hs %= 24;
+  //   alar[(int)i].ms %= 60;
+  //   alar[(int)i].get();
+  // }
+}
+
 class Alarmer
 {
 public:

@@ -37,22 +37,15 @@ bool wokeUpper()
     return false;
   }
   sleeper.start(30000, GTMode::Timeout);
-  sleeper.start();
   return true;
 }
 
-void ee_save0();
 void ee_save1();
 
 // #include <mode1.h>
 #include <mode0.h>
 #include <symbols.h>
 #include <melod.h>
-
-void ee_save0()
-{
-  // TODO: save time to EEPROM
-}
 
 void ee_save1()
 {
@@ -70,6 +63,10 @@ void setup()
   lcd.createChar(5, leftarrow);
   bigNumbersLcd.initNumbers();
 
+  //* init EEPROM
+  ee_load0();
+  // ee_load1();
+
   //* init RTC
   if (!rtc.begin())
   {
@@ -78,29 +75,35 @@ void setup()
     while (true)
       delay(1000);
   }
+  uint8_t seconds;
   if (rtc.lostPower())
   {
     lcd.setCursor(0, 0);
     lcd.print("RTC battery was flat");
     lcd.setCursor(0, 1);
-    lcd.print("Setting time!");
-    rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    lcd.print("Setting time when");
+    lcd.setCursor(0, 2);
+    lcd.print("was turned off!");
+    rtc.adjust(now.toDateTime());
     delay(5000);
     lcd.clear();
+    seconds = 5;
   }
-  uint8_t seconds = now.fromDateTime(rtc.now());
+  else
+  {
+    MyTime eeprom_time = now;
+    seconds = now.fromDateTime(rtc.now());
+    // TODO: alarm if there was an alarm while the clock was turned off
+  }
 
   //* timers
   time.start((61 - seconds) * 1000, GTMode::Timeout);
-  sleeper.setMode(GTMode::Timeout);
-  sleeper.setTime(30000);
   wokeUpper();
 
   //* buttons and encoder
   butt_settings.setTimeout(1000);
-  butt_settings.setDebounce(20);
-  butt_mode.setDebounce(20);
-  sensor.setTimeout(800);
+  butt_settings.setDebounce(60);
+  butt_mode.setDebounce(60);
   sensor.setClickTimeout(1000);
   sensor.setDebounce(50);
   sensor.setType(HIGH_PULL);
@@ -108,28 +111,6 @@ void setup()
 
   //* power
   power.hardwareDisable(PWR_SPI | PWR_ADC);
-
-  //* EEPROM
-  // EEPROM.get(0, days);
-  // EEPROM.get(1, hours);
-  // EEPROM.get(2, minutes);
-  // days %= 7;
-  // hours %= 24;
-  // minutes %= 60;
-
-  // for (char i = 0; i < 4; i++)
-  // {
-  //   EEPROM.get(3 + (10 * i), alar[(int)i].hs);
-  //   EEPROM.get(4 + (10 * i), alar[(int)i].ms);
-  //   alar[(int)i].isBring = (bool)EEPROM[5 + (10 * i)];
-  //   for (int j = 0; j < 7; j++)
-  //   {
-  //     alar[(int)i].ds[j] = (bool)EEPROM[6 + (10 * i) + j];
-  //   }
-  //   alar[(int)i].hs %= 24;
-  //   alar[(int)i].ms %= 60;
-  //   alar[(int)i].get();
-  // }
 }
 
 void loop()
@@ -146,14 +127,14 @@ void loop()
 
   if (time)
   {
-    // TODO: check RTC time and update minutes, hours and days variables
     DateTime now_rtc = rtc.now();
-    if (now_rtc.minute() != now.minutes)
+    if (now_rtc.minute() != now.minutes || now_rtc.hour() != now.hours || now_rtc.dayOfTheWeek() != now.weekday)
     {
       uint8_t seconds = now.fromDateTime(now_rtc);
       time.start((61 - seconds) * 1000, GTMode::Timeout);
       time_changed = true;
-      // TODO: check if alarm is bringing and save it to EEPROM
+      ee_save0();
+      // TODO: check if alarm is bringing
     }
   }
 
@@ -166,16 +147,6 @@ void loop()
       mode_changed = true;
     }
   }
-
-  if (mode == 0)
-  {
-    mode = mode0(now, mode_changed, time_changed);
-  }
-  else if (mode == 1)
-  {
-    // mode = mode1(time_changed);
-  }
-  time_changed = false;
 
   // for (char i = 0; i < 4; i++)
   // {
@@ -212,19 +183,17 @@ void loop()
   //   j = (j + 1) % 269;
   // }
 
-
-
-  // if (sensor.isClick())
-  // {
-  //   wokeUpper();
-  //   alar[(int)theAlarm].bringin_on = false;
-  //   if (theAlarm != 255)
-  //   {
-  //     j = 0;
-  //     melod.stop();
-  //     theAlarm = 255;
-  //   }
-  // }
+  if (sensor.isClick())
+  {
+    wokeUpper();
+    //   alar[(int)theAlarm].bringin_on = false;
+    //   if (theAlarm != 255)
+    //   {
+    //     j = 0;
+    //     melod.stop();
+    //     theAlarm = 255;
+    //   }
+  }
 
   // if (sensor.isTriple())
   // {
@@ -243,6 +212,15 @@ void loop()
   {
     lcd.noBacklight();
     isBacklight = false;
+  }
+
+  if (mode == 0)
+  {
+    mode = mode0(now, mode_changed, time_changed);
+  }
+  else if (mode == 1)
+  {
+    // mode = mode1(time_changed);
   }
 
   time_changed = false;

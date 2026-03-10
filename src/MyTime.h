@@ -36,26 +36,30 @@ public:
     return dt;
   }
 
-  void normalize()
+  void normalize(bool translate)
   {
     if (minutes >= 60)
     {
-      hours += 1;
+      if (translate)
+        hours += 1;
       minutes -= 60;
     }
     else if (minutes < 0)
     {
-      hours -= 1;
+      if (translate)
+        hours -= 1;
       minutes += 60;
     }
     if (hours >= 24)
     {
-      weekday += 1;
+      if (translate)
+        weekday += 1;
       hours -= 24;
     }
     else if (hours < 0)
     {
-      weekday -= 1;
+      if (translate)
+        weekday -= 1;
       hours += 24;
     }
     if (weekday >= 7)
