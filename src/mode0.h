@@ -1,3 +1,6 @@
+void display0();
+void display0settings(MyTime setting_now, int8_t setting_mode);
+
 void ee_save0()
 {
   // TODO: save time to EEPROM
@@ -49,7 +52,7 @@ void mode0(MyTime &now, bool mode_changed, bool time_changed)
       {
         settings = true;
         setting_mode = 0;
-        setting_now = MyTime(now.minutes, now.hours, now.weekday);
+        setting_now = now;
         update_display = true;
       }
       else
@@ -68,23 +71,7 @@ void mode0(MyTime &now, bool mode_changed, bool time_changed)
     if (update_display)
     {
       //* display
-      lcd.clear();
-      uint8_t a = now.hours / 10;
-      uint8_t b = now.hours % 10;
-      uint8_t c = now.minutes / 10;
-      uint8_t d = now.minutes % 10;
-      bigNumbersLcd.printNumber(a, 0, 0);
-      bigNumbersLcd.printNumber(b, 4, 0);
-      bigNumbersLcd.printNumber(c, 12, 0);
-      bigNumbersLcd.printNumber(d, 16, 0);
-      lcd.setCursor(9, 0);
-      lcd.write(3);
-      lcd.setCursor(9, 1);
-      lcd.write(3);
-
-      lcd.setCursor(0, 3);
-      lcd.print(now.get_weekday_word());
-      // TODO: display nearest alarm
+      display0();
     }
   }
   else
@@ -135,35 +122,61 @@ void mode0(MyTime &now, bool mode_changed, bool time_changed)
     if (enc_show || update_display)
     {
       //* display
-      lcd.clear();
-      lcd.print("SETTINGS");
-
-      char a[6];
-      itoa(int(setting_now.hours / 10), a, DEC);
-      itoa((setting_now.hours % 10), a + 1, DEC);
-      strcpy(a + 2, ":");
-      itoa((setting_now.minutes / 10), a + 3, DEC);
-      itoa((setting_now.minutes % 10), a + 4, DEC);
-
-      lcd.setCursor(0, 1);
-      lcd.print(a);
-      lcd.setCursor(7, 1);
-      lcd.print(setting_now.get_weekday_word());
-
-      if (setting_mode == 0)
-      {
-        lcd.setCursor(0, 2);
-      }
-      else if (setting_mode == 1)
-      {
-        lcd.setCursor(3, 2);
-      }
-      else if (setting_mode == 2)
-      {
-        lcd.setCursor(7, 2);
-      }
-      lcd.write(4);
-      lcd.write(4);
+      display0settings(setting_now, setting_mode);
     }
   }
+}
+
+void display0()
+{
+  lcd.clear();
+  uint8_t a = now.hours / 10;
+  uint8_t b = now.hours % 10;
+  uint8_t c = now.minutes / 10;
+  uint8_t d = now.minutes % 10;
+  bigNumbersLcd.printNumber(a, 0, 0);
+  bigNumbersLcd.printNumber(b, 4, 0);
+  bigNumbersLcd.printNumber(c, 12, 0);
+  bigNumbersLcd.printNumber(d, 16, 0);
+  lcd.setCursor(9, 0);
+  lcd.write(3);
+  lcd.setCursor(9, 1);
+  lcd.write(3);
+
+  lcd.setCursor(0, 3);
+  lcd.print(now.get_weekday_word());
+  // TODO: display nearest alarm
+}
+
+void display0settings(MyTime setting_now, int8_t setting_mode)
+{
+  lcd.clear();
+  lcd.print("SETTINGS");
+
+  char a[6];
+  itoa(int(setting_now.hours / 10), a, DEC);
+  itoa((setting_now.hours % 10), a + 1, DEC);
+  strcpy(a + 2, ":");
+  itoa((setting_now.minutes / 10), a + 3, DEC);
+  itoa((setting_now.minutes % 10), a + 4, DEC);
+
+  lcd.setCursor(0, 1);
+  lcd.print(a);
+  lcd.setCursor(7, 1);
+  lcd.print(setting_now.get_weekday_word());
+
+  if (setting_mode == 0)
+  {
+    lcd.setCursor(0, 2);
+  }
+  else if (setting_mode == 1)
+  {
+    lcd.setCursor(3, 2);
+  }
+  else if (setting_mode == 2)
+  {
+    lcd.setCursor(7, 2);
+  }
+  lcd.write(4);
+  lcd.write(4);
 }

@@ -1,5 +1,8 @@
 #include "alarm.h"
 
+void display1(int8_t selected_alarm);
+void display1settings(int8_t selected_alarm, Alarmer setting_alarm, int8_t setting_mode);
+
 void ee_load1()
 {
   // for (char i = 0; i < 4; i++)
@@ -43,8 +46,9 @@ Alarmer alar[(signed char)4] = {
 void mode1(bool mode_changed, bool time_changed)
 {
   static bool settings = false;
-  static signed char selected_alarm = 0;
-  static signed char setting_mode = 0;
+  static int8_t selected_alarm = 0;
+  static Alarmer setting_alarm = Alarmer(0, 0, massiv);
+  static uint8_t setting_mode = 0;
   bool update_display = false;
 
   if (mode_changed)
@@ -79,11 +83,13 @@ void mode1(bool mode_changed, bool time_changed)
       {
         settings = true;
         setting_mode = 0;
+        setting_alarm = alar[selected_alarm];
         update_display = true;
       }
       else
       {
         settings = false;
+        alar[selected_alarm] = setting_alarm;
         ee_save1();
         update_display = true;
       }
@@ -120,26 +126,7 @@ void mode1(bool mode_changed, bool time_changed)
     }
     if (enc_show || update_display)
     {
-      lcd.clear();
-      for (char i = 0; i < 4; i++)
-      {
-        lcd.setCursor(0, i);
-        alar[(int)i].get();
-        lcd.print(alar[(int)i].text);
-        if (alar[(int)i].bringingEnabled)
-        {
-          lcd.print("+");
-        }
-        else
-        {
-          lcd.print("-");
-        }
-        if (selected_alarm == i)
-        {
-          lcd.setCursor(19, i);
-          lcd.write(5);
-        }
-      }
+      display1(selected_alarm);
     }
   }
   else
@@ -148,16 +135,16 @@ void mode1(bool mode_changed, bool time_changed)
     {
       if (setting_mode == 0)
       {
-        alar[selected_alarm].time.hours--;
+        setting_alarm.time.hours--;
       }
       else if (setting_mode == 1)
       {
-        alar[selected_alarm].time.minutes--;
+        setting_alarm.time.minutes--;
       }
       else if (setting_mode >= 2)
       {
         uint8_t selected_day = setting_mode - 2;
-        alar[selected_alarm].days[selected_day] = !alar[selected_alarm].days[selected_day];
+        setting_alarm.days[selected_day] = !setting_alarm.days[selected_day];
       }
       if (!enc_show.running())
         enc_show.start(150, GTMode::Timeout);
@@ -166,21 +153,21 @@ void mode1(bool mode_changed, bool time_changed)
     {
       if (setting_mode == 0)
       {
-        alar[selected_alarm].time.hours++;
+        setting_alarm.time.hours++;
       }
       else if (setting_mode == 1)
       {
-        alar[selected_alarm].time.minutes++;
+        setting_alarm.time.minutes++;
       }
       else if (setting_mode >= 2)
       {
         uint8_t selected_day = setting_mode - 2;
-        alar[selected_alarm].days[selected_day] = !alar[selected_alarm].days[selected_day];
+        setting_alarm.days[selected_day] = !setting_alarm.days[selected_day];
       }
       if (!enc_show.running())
         enc_show.start(150, GTMode::Timeout);
     }
-    alar[selected_alarm].time.normalize(false);
+    setting_alarm.time.normalize(false);
 
     if (update_display)
     {
@@ -189,35 +176,64 @@ void mode1(bool mode_changed, bool time_changed)
     if (enc_show || update_display)
     {
       //* display
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("ALARM ");
-      lcd.print(selected_alarm + 1);
-      lcd.print(" SETTINGS");
-      lcd.setCursor(0, 1);
-      alar[selected_alarm].get();
-      lcd.print(alar[selected_alarm].text);
-      lcd.setCursor(8, 3);
-      lcd.print("MTWTFSS");
-
-      if (setting_mode == 0)
-      {
-        lcd.setCursor(0, 2);
-        lcd.write(4);
-        lcd.write(4);
-      }
-      else if (setting_mode == 1)
-      {
-        lcd.setCursor(3, 2);
-        lcd.write(4);
-        lcd.write(4);
-      }
-      else if (setting_mode >= 2)
-      {
-        uint8_t selected_day = setting_mode - 2;
-        lcd.setCursor(8 + selected_day, 2);
-        lcd.write(4);
-      }
+      display1settings(selected_alarm, setting_alarm, setting_mode);
     }
+  }
+}
+
+void display1(int8_t selected_alarm)
+{
+  lcd.clear();
+  for (char i = 0; i < 4; i++)
+  {
+    lcd.setCursor(0, i);
+    alar[(int)i].get();
+    lcd.print(alar[(int)i].text);
+    if (alar[(int)i].bringingEnabled)
+    {
+      lcd.print("+");
+    }
+    else
+    {
+      lcd.print("-");
+    }
+    if (selected_alarm == i)
+    {
+      lcd.setCursor(19, i);
+      lcd.write(5);
+    }
+  }
+}
+
+void display1settings(int8_t selected_alarm, Alarmer setting_alarm, int8_t setting_mode)
+{
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("ALARM ");
+  lcd.print(selected_alarm + 1);
+  lcd.print(" SETTINGS");
+  lcd.setCursor(0, 1);
+  setting_alarm.get();
+  lcd.print(setting_alarm.text);
+  lcd.setCursor(8, 3);
+  lcd.print("MTWTFSS");
+
+  if (setting_mode == 0)
+  {
+    lcd.setCursor(0, 2);
+    lcd.write(4);
+    lcd.write(4);
+  }
+  else if (setting_mode == 1)
+  {
+    lcd.setCursor(3, 2);
+    lcd.write(4);
+    lcd.write(4);
+  }
+  else if (setting_mode >= 2)
+  {
+    uint8_t selected_day = setting_mode - 2;
+    lcd.setCursor(8 + selected_day, 2);
+    lcd.write(4);
   }
 }
