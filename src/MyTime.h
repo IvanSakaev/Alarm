@@ -1,3 +1,6 @@
+#ifndef MYTIME_H
+#define MYTIME_H
+
 #include <Arduino.h>
 #include <RTClib.h>
 
@@ -102,3 +105,4 @@ public:
     return word;
   }
 };
+#endif

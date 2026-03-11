@@ -15,21 +15,21 @@ void ee_load0()
   now.normalize(false);
 }
 
-signed char mode0(MyTime &now, bool mode_changed, bool time_changed)
+void mode0(MyTime &now, bool mode_changed, bool time_changed)
 {
   static bool settings = false;
   static signed char setting_mode = 0;
   static MyTime setting_now;
-  bool updateDisplay = false;
+  bool update_display = false;
 
   if (mode_changed)
   {
     settings = false;
-    updateDisplay = true;
+    update_display = true;
   }
   if (time_changed)
   {
-    updateDisplay = true;
+    update_display = true;
   }
 
   if (butt_settings.isClick())
@@ -37,7 +37,7 @@ signed char mode0(MyTime &now, bool mode_changed, bool time_changed)
     if (wokeUpper() && settings)
     {
       setting_mode = (setting_mode + 1) % 3;
-      updateDisplay = true;
+      update_display = true;
     }
   }
 
@@ -48,24 +48,24 @@ signed char mode0(MyTime &now, bool mode_changed, bool time_changed)
       if (!settings)
       {
         settings = true;
-        updateDisplay = true;
         setting_mode = 0;
         setting_now = MyTime(now.minutes, now.hours, now.weekday);
+        update_display = true;
       }
       else
       {
         settings = false;
-        updateDisplay = true;
         now = setting_now;
         rtc.adjust(now.toDateTime());
         ee_save0();
+        update_display = true;
       }
     }
   }
 
   if (!settings)
   {
-    if (updateDisplay)
+    if (update_display)
     {
       //* display
       lcd.clear();
@@ -106,9 +106,7 @@ signed char mode0(MyTime &now, bool mode_changed, bool time_changed)
           setting_now.weekday--;
         }
         if (!enc_show.running())
-        {
           enc_show.start(150, GTMode::Timeout);
-        }
       }
       else if (enc.isRight())
       {
@@ -125,18 +123,16 @@ signed char mode0(MyTime &now, bool mode_changed, bool time_changed)
           setting_now.weekday++;
         }
         if (!enc_show.running())
-        {
           enc_show.start(150, GTMode::Timeout);
-        }
       }
     }
     setting_now.normalize(false);
 
-    if (updateDisplay)
+    if (update_display)
     {
       enc_show.force();
     }
-    if (enc_show || updateDisplay)
+    if (enc_show || update_display)
     {
       //* display
       lcd.clear();
@@ -170,5 +166,4 @@ signed char mode0(MyTime &now, bool mode_changed, bool time_changed)
       lcd.write(4);
     }
   }
-  return 0;
 }

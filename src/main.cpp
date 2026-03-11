@@ -40,17 +40,10 @@ bool wokeUpper()
   return true;
 }
 
-void ee_save1();
-
-// #include <mode1.h>
 #include <mode0.h>
+#include <mode1.h>
 #include <symbols.h>
 #include <melod.h>
-
-void ee_save1()
-{
-  // TODO: save alarms to EEPROM
-}
 
 void setup()
 {
@@ -119,6 +112,7 @@ void loop()
   // static unsigned int j = 0;
   // static char theAlarm = 255;
   static bool time_changed = true;
+  bool mode_changed = false;
 
   butt_settings.tick();
   butt_mode.tick();
@@ -139,7 +133,6 @@ void loop()
     time.start((61 - seconds) * 1000UL, GTMode::Timeout);
   }
 
-  bool mode_changed = false;
   if (butt_mode.isClick())
   {
     if (wokeUpper())
@@ -155,11 +148,11 @@ void loop()
   //   {
   //     if (!zaran_off)
   //     {
-  //       if (alar[(int)i].bringin_on)
+  //       if (alar[(int)i].bringingNow)
   //       {
   //         wokeUpper();
   //         melod.setTimeout(100);
-  //         alar[(int)i].bringin_on = false;
+  //         alar[(int)i].bringingNow = false;
   //         theAlarm = i;
   //         break;
   //       }
@@ -167,7 +160,7 @@ void loop()
   //   }
   //   else
   //   {
-  //     alar[(int)i].bringin_on = true;
+  //     alar[(int)i].bringingNow = true;
   //     if (i == theAlarm)
   //     {
   //       j = 0;
@@ -187,7 +180,7 @@ void loop()
   if (sensor.isClick())
   {
     wokeUpper();
-    //   alar[(int)theAlarm].bringin_on = false;
+    //   alar[(int)theAlarm].bringingNow = false;
     //   if (theAlarm != 255)
     //   {
     //     j = 0;
@@ -217,11 +210,11 @@ void loop()
 
   if (mode == 0)
   {
-    mode = mode0(now, mode_changed, time_changed);
+    mode0(now, mode_changed, time_changed);
   }
   else if (mode == 1)
   {
-    // mode = mode1(time_changed);
+    mode1(mode_changed, time_changed);
   }
 
   time_changed = false;
