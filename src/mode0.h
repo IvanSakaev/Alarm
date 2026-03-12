@@ -93,7 +93,7 @@ void mode0(MyTime &now, bool mode_changed, bool time_changed)
           setting_now.weekday--;
         }
         if (!enc_show.running())
-          enc_show.start(150, GTMode::Timeout);
+          enc_show.start(50, GTMode::Timeout);
       }
       else if (enc.isRight())
       {
@@ -110,7 +110,7 @@ void mode0(MyTime &now, bool mode_changed, bool time_changed)
           setting_now.weekday++;
         }
         if (!enc_show.running())
-          enc_show.start(150, GTMode::Timeout);
+          enc_show.start(50, GTMode::Timeout);
       }
     }
     setting_now.normalize(false);
