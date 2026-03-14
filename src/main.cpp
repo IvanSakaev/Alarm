@@ -107,9 +107,8 @@ void setup()
 
 void loop()
 {
-  static signed char mode = 0;
-  // static unsigned int j = 0;
-  // static char theAlarm = 255;
+  static uint8_t mode = 0;
+  static uint16_t current_note = 0;
   static bool time_changed = true;
   bool mode_changed = false;
 
@@ -162,51 +161,20 @@ void loop()
     }
   }
 
-  // for (char i = 0; i < 4; i++)
-  // {
-  //   if (alar[(int)i].isBringing(minutes, hours, days))
-  //   {
-  //     if (!zaran_off)
-  //     {
-  //       if (alar[(int)i].bringingNow)
-  //       {
-  //         wokeUpper();
-  //         melod.setTimeout(100);
-  //         alar[(int)i].bringingNow = false;
-  //         theAlarm = i;
-  //         break;
-  //       }
-  //     }
-  //   }
-  //   else
-  //   {
-  //     alar[(int)i].bringingNow = true;
-  //     if (i == theAlarm)
-  //     {
-  //       j = 0;
-  //       melod.stop();
-  //       theAlarm = 255;
-  //     }
-  //   }
-  // }
-
-  // if (melod.isReady())
-  // {
-  //   tone(10, pgm_read_dword(&freqs[j]), pgm_read_float(&lens[j]));
-  //   melod.setTimeout(pgm_read_float(&pas[j]));
-  //   j = (j + 1) % 269;
-  // }
+  if (melod)
+  {
+    tone(10, pgm_read_dword(&freqs[current_note]), pgm_read_float(&lens[current_note]));
+    melod.start(pgm_read_float(&pas[current_note]), GTMode::Timeout);
+    current_note = (current_note + 1) % 269;
+  }
 
   if (sensor.isClick())
   {
     wokeUpper();
-    //   alar[(int)theAlarm].bringingNow = false;
-    //   if (theAlarm != 255)
-    //   {
-    //     j = 0;
-    //     melod.stop();
-    //     theAlarm = 255;
-    //   }
+    for (uint8_t i = 0; i < 4; i++)
+      alar[i].isBringingNow = false;
+    current_note = 0;
+    melod.stop();
   }
 
   // if (sensor.isTriple())
