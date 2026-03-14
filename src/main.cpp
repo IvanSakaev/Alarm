@@ -5,7 +5,6 @@
 #include <GTimer.h>
 #include <bigNumbers.h>
 #include <GyverPower.h>
-#include <EEPROM.h>
 #include <RTClib.h>
 #include "MyTime.h"
 #define TONE_PIN 10
@@ -58,7 +57,7 @@ void setup()
 
   //* init EEPROM
   ee_load0();
-  // ee_load1();
+  ee_load1();
 
   //* init RTC
   if (!rtc.begin())
@@ -127,7 +126,28 @@ void loop()
       now.fromDateTime(now_rtc);
       time_changed = true;
       ee_save0();
-      // TODO: check if alarm is bringing
+
+      for (uint8_t i = 0; i < 4; i++)
+      {
+        if (alar[i].isBringing(now.minutes, now.hours, now.weekday))
+        {
+          if (!zaran_off && !alar[i].isBringingNow)
+          {
+            wokeUpper();
+            melod.start(100, GTMode::Timeout);
+            alar[i].isBringingNow = true;
+            break;
+          }
+        }
+        else
+        {
+          if (alar[i].isBringingNow)
+          {
+            alar[i].isBringingNow = false;
+            melod.stop();
+          }
+        }
+      }
     }
     uint8_t seconds = now_rtc.second();
     time.start((61 - seconds) * 1000UL, GTMode::Timeout);

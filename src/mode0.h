@@ -1,17 +1,17 @@
+#include <EEPROM.h>
+
 void display0();
 void display0settings(MyTime setting_now, int8_t setting_mode);
 
 void ee_save0()
 {
-  // TODO: save time to EEPROM
-  EEPROM.put(10, now.minutes);
-  EEPROM.put(11, now.hours);
-  EEPROM.put(12, now.weekday);
+  EEPROM.update(10, now.minutes);
+  EEPROM.update(11, now.hours);
+  EEPROM.update(12, now.weekday);
 }
 
 void ee_load0()
 {
-  // TODO: load time from EEPROM
   EEPROM.get(10, now.minutes);
   EEPROM.get(11, now.hours);
   EEPROM.get(12, now.weekday);

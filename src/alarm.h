@@ -6,6 +6,7 @@ class Alarmer
 public:
   // bool bringingNow = true;
   bool bringingEnabled = false;
+  bool isBringingNow = false;
   MyTime time = MyTime(0, 0, 0);
   bool days[7];
   char a[2] = "0";
@@ -159,10 +160,5 @@ public:
       }
     }
     return false;
-  }
-
-  void turnOffBring()
-  {
-    // bringingNow = false;
   }
 };

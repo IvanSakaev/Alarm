@@ -1,38 +1,8 @@
 #include "alarm.h"
+#include <EEPROM.h>
 
 void display1(bool update_display, int8_t selected_alarm);
 void display1settings(bool update_display, bool time_changed, int8_t selected_alarm, Alarmer setting_alarm, int8_t setting_mode);
-
-void ee_load1()
-{
-  // for (char i = 0; i < 4; i++)
-  // {
-  //   EEPROM.get(3 + (10 * i), alar[(int)i].hs);
-  //   EEPROM.get(4 + (10 * i), alar[(int)i].ms);
-  //   alar[(int)i].isBring = (bool)EEPROM[5 + (10 * i)];
-  //   for (int j = 0; j < 7; j++)
-  //   {
-  //     alar[(int)i].ds[j] = (bool)EEPROM[6 + (10 * i) + j];
-  //   }
-  //   alar[(int)i].hs %= 24;
-  //   alar[(int)i].ms %= 60;
-  //   alar[(int)i].get();
-  // }
-}
-
-void ee_save1()
-{
-  // for (char i = 0; i < 4; i++)
-  // {
-  //   EEPROM.put(3 + (10 * i), alar[(int)i].hs);
-  //   EEPROM.put(4 + (10 * i), alar[(int)i].ms);
-  //   EEPROM[5 + (10 * i)] = (byte)alar[(int)i].isBring;
-  //   for (int j = 0; j < 7; j++)
-  //   {
-  //     EEPROM[6 + (10 * i) + j] = (byte)alar[(int)i].ds[j];
-  //   }
-  // }
-}
 
 bool massiv[7] = {true, true, true, true,
                   true, true, true};
@@ -42,6 +12,47 @@ Alarmer alar[(signed char)4] = {
     Alarmer(0, 0, massiv),
     Alarmer(0, 0, massiv),
 };
+
+struct PersistAlarm
+{
+  int8_t hours;
+  int8_t minutes;
+  bool bringingEnabled;
+  bool days[7];
+};
+
+void ee_load1()
+{
+  for (char i = 0; i < 4; i++)
+  {
+    PersistAlarm p;
+    EEPROM.get(16 + (10 * i), p);
+    alar[(int)i].time.hours = p.hours;
+    alar[(int)i].time.minutes = p.minutes;
+    alar[(int)i].bringingEnabled = p.bringingEnabled;
+    for (int j = 0; j < 7; j++)
+    {
+      alar[(int)i].days[j] = p.days[j];
+    }
+    alar[(int)i].time.normalize(false);
+  }
+}
+
+void ee_save1()
+{
+  // Write only changed bytes to EEPROM to reduce wear.
+  for (char i = 0; i < 4; i++)
+  {
+    uint16_t base = 16 + (10 * i);
+    EEPROM.update(base + 0, (uint8_t)alar[(int)i].time.hours);
+    EEPROM.update(base + 1, (uint8_t)alar[(int)i].time.minutes);
+    EEPROM.update(base + 2, (uint8_t)alar[(int)i].bringingEnabled);
+    for (int j = 0; j < 7; j++)
+    {
+      EEPROM.update(base + 3 + j, (uint8_t)alar[(int)i].days[j]);
+    }
+  }
+}
 
 void mode1(bool mode_changed, bool time_changed)
 {
