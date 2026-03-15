@@ -93,13 +93,20 @@ void setup()
       {
         if (alar[i].bringingEnabled)
         {
-          DateTime alarm_time = DateTime(2000, 1, 2, alar[i].time.hours, alar[i].time.minutes, 0);
-          if (alarm_time > eeprom_time && alarm_time <= rtc_time)
+          if (alar[i].getDay(rtc_time.dayOfTheWeek()) || alar[i].isOnce())
           {
-            wokeUpper();
-            melod.start(100, GTMode::Timeout);
-            alar[i].isBringingNow = true;
-            break;
+            DateTime alarm_time = DateTime(2000, 1, 2, alar[i].time.hours, alar[i].time.minutes, 0);
+            if (alarm_time > eeprom_time && alarm_time <= rtc_time)
+            {
+              wokeUpper();
+              melod.start(100, GTMode::Timeout);
+              alar[i].isBringingNow = true;
+              if (alar[i].isOnce())
+              {
+                alar[i].bringingEnabled = false;
+              }
+              break;
+            }
           }
         }
       }
@@ -153,6 +160,10 @@ void loop()
             wokeUpper();
             melod.start(100, GTMode::Timeout);
             alar[i].isBringingNow = true;
+            if (alar[i].isOnce())
+            {
+              alar[i].bringingEnabled = false;
+            }
             break;
           }
         }

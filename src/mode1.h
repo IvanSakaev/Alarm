@@ -60,27 +60,23 @@ void ee_save1()
 DateTime getNearestAlarm(MyTime now)
 {
   DateTime now_time = now.toDateTime();
-  DateTime nearest_alarm = DateTime(0, 0, 0, 0, 0, 0);
+  DateTime nearest_alarm = DateTime(0, 0, 0);
   for (uint8_t i = 0; i < 4; i++)
   {
     if (alar[i].bringingEnabled)
     {
       DateTime alarm_time = alar[i].time.toDateTime();
       uint8_t day_idx = 0;
-      int8_t day_idx2 = alarm_time.dayOfTheWeek() - 1; // day index from monday
-      if (day_idx2 < 0)
-        day_idx2 = 6;
-      while (alarm_time < now_time || !alar[i].days[day_idx2])
+      while (alarm_time < now_time || !(alar[i].getDay(alarm_time.dayOfTheWeek()) || alar[i].isOnce()))
       {
         alarm_time = alarm_time + TimeSpan(1, 0, 0, 0); // Add one day
         day_idx++;
         if (day_idx >= 7)
           break;
-        day_idx2 = (day_idx2 + 1) % 7;
       }
       if (day_idx >= 7)
         continue;
-      if (nearest_alarm == DateTime(0, 0, 0, 0, 0, 0) || alarm_time < nearest_alarm)
+      if (nearest_alarm == DateTime(0, 0, 0) || alarm_time < nearest_alarm)
         nearest_alarm = alarm_time;
     }
   }

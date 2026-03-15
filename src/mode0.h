@@ -153,7 +153,7 @@ void display0(DateTime nearestAlarm)
 
   // display nearest alarm
   lcd.setCursor(12, 3);
-  if (nearestAlarm != DateTime(0, 0, 0, 0, 0, 0))
+  if (nearestAlarm != DateTime(0, 0, 0))
   {
     uint8_t ah = nearestAlarm.hour();
     uint8_t am = nearestAlarm.minute();
