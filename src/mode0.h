@@ -42,7 +42,7 @@ void mode0(MyTime &now, bool mode_changed, bool time_changed)
 
   if (butt_settings.isClick())
   {
-    if (wokeUpper() && settings)
+    if (wokeUpper(true) && settings)
     {
       setting_mode = (setting_mode + 1) % 3;
       update_display = true;
@@ -51,7 +51,7 @@ void mode0(MyTime &now, bool mode_changed, bool time_changed)
 
   if (butt_settings.isHolded())
   {
-    if (wokeUpper())
+    if (wokeUpper(true))
     {
       if (!settings)
       {
@@ -81,7 +81,7 @@ void mode0(MyTime &now, bool mode_changed, bool time_changed)
   }
   else
   {
-    if (wokeUpper())
+    if (wokeUpper(true))
     {
       if (enc.isLeft())
       {

@@ -26,16 +26,17 @@ bool isBacklight = true;
 MyTime now = MyTime(0, 0, 1);
 bool zaran_off = false;
 
-bool wokeUpper()
+bool wokeUpper(bool hard)
 {
   if (!isBacklight)
   {
     lcd.backlight();
     isBacklight = true;
-    sleeper.start(30000, GTMode::Timeout);
+    sleeper.start(hard ? 30000 : 5000, GTMode::Timeout);
     return false;
+  } else {
+    sleeper.start(30000, GTMode::Timeout);
   }
-  sleeper.start(30000, GTMode::Timeout);
   return true;
 }
 
@@ -98,7 +99,7 @@ void setup()
             DateTime alarm_time = DateTime(2000, 1, 2, alar[i].time.hours, alar[i].time.minutes, 0);
             if (alarm_time > eeprom_time && alarm_time <= rtc_time)
             {
-              wokeUpper();
+              wokeUpper(false);
               melod.start(100, GTMode::Timeout);
               alar[i].isBringingNow = true;
               if (alar[i].isOnce())
@@ -115,7 +116,7 @@ void setup()
 
   //* timers
   time.start((61 - seconds) * 1000UL, GTMode::Timeout);
-  wokeUpper();
+  wokeUpper(true);
 
   //* buttons and encoder
   butt_settings.setTimeout(1000);
@@ -157,7 +158,7 @@ void loop()
         {
           if (!zaran_off && !alar[i].isBringingNow)
           {
-            wokeUpper();
+            wokeUpper(false);
             melod.start(100, GTMode::Timeout);
             alar[i].isBringingNow = true;
             if (alar[i].isOnce())
@@ -183,7 +184,7 @@ void loop()
 
   if (butt_mode.isClick())
   {
-    if (wokeUpper())
+    if (wokeUpper(true))
     {
       mode = (mode + 1) % 2;
       mode_changed = true;
@@ -199,7 +200,7 @@ void loop()
 
   if (sensor.isClick())
   {
-    wokeUpper();
+    wokeUpper(false);
     for (uint8_t i = 0; i < 4; i++)
       alar[i].isBringingNow = false;
     current_note = 0;

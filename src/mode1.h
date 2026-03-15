@@ -99,7 +99,7 @@ void mode1(bool mode_changed, bool time_changed)
 
   if (butt_settings.isClick())
   {
-    if (wokeUpper())
+    if (wokeUpper(true))
     {
       if (settings)
       {
@@ -115,7 +115,7 @@ void mode1(bool mode_changed, bool time_changed)
 
   if (butt_settings.isHolded())
   {
-    if (wokeUpper())
+    if (wokeUpper(true))
     {
       if (!settings)
       {
