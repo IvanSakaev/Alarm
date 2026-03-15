@@ -83,9 +83,27 @@ void setup()
   }
   else
   {
-    MyTime eeprom_time = now;
+    DateTime eeprom_time = now.toDateTime();
     seconds = now.fromDateTime(rtc.now());
-    // TODO: alarm if there was an alarm while the clock was turned off
+    DateTime rtc_time = now.toDateTime();
+    // check if there was an alarm while the clock was turned off
+    if (rtc_time.dayOfTheWeek() == eeprom_time.dayOfTheWeek())
+    {
+      for (uint8_t i = 0; i < 4; i++)
+      {
+        if (alar[i].bringingEnabled)
+        {
+          DateTime alarm_time = DateTime(2000, 1, 2, alar[i].time.hours, alar[i].time.minutes, 0);
+          if (alarm_time > eeprom_time && alarm_time <= rtc_time)
+          {
+            wokeUpper();
+            melod.start(100, GTMode::Timeout);
+            alar[i].isBringingNow = true;
+            break;
+          }
+        }
+      }
+    }
   }
 
   //* timers
@@ -94,8 +112,8 @@ void setup()
 
   //* buttons and encoder
   butt_settings.setTimeout(1000);
-  butt_settings.setDebounce(60);
-  butt_mode.setDebounce(60);
+  butt_settings.setDebounce(120);
+  butt_mode.setDebounce(120);
   sensor.setClickTimeout(1000);
   sensor.setDebounce(50);
   sensor.setType(HIGH_PULL);

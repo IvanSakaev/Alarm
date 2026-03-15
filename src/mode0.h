@@ -1,6 +1,10 @@
-#include <EEPROM.h>
+#ifndef MODE0_H
+#define MODE0_H
 
-void display0();
+#include <EEPROM.h>
+#include "mode1.h"
+
+void display0(DateTime nearestAlarm);
 void display0settings(MyTime setting_now, int8_t setting_mode);
 
 void ee_save0()
@@ -24,6 +28,7 @@ void mode0(MyTime &now, bool mode_changed, bool time_changed)
   static signed char setting_mode = 0;
   static MyTime setting_now;
   bool update_display = false;
+  DateTime nearest_alarm = getNearestAlarm(now);
 
   if (mode_changed)
   {
@@ -71,7 +76,7 @@ void mode0(MyTime &now, bool mode_changed, bool time_changed)
     if (update_display)
     {
       //* display
-      display0();
+      display0(nearest_alarm);
     }
   }
   else
@@ -127,7 +132,7 @@ void mode0(MyTime &now, bool mode_changed, bool time_changed)
   }
 }
 
-void display0()
+void display0(DateTime nearestAlarm)
 {
   lcd.clear();
   uint8_t a = now.hours / 10;
@@ -145,7 +150,28 @@ void display0()
 
   lcd.setCursor(0, 3);
   lcd.print(now.get_weekday_word());
-  // TODO: display nearest alarm
+
+  // display nearest alarm
+  lcd.setCursor(12, 3);
+  if (nearestAlarm != DateTime(0, 0, 0, 0, 0, 0))
+  {
+    uint8_t ah = nearestAlarm.hour();
+    uint8_t am = nearestAlarm.minute();
+    if (ah < 10)
+      lcd.print('0');
+    lcd.print(ah);
+    lcd.print(':');
+    if (am < 10)
+      lcd.print('0');
+    lcd.print(am);
+    MyTime nearestAlarmMyTime = MyTime(nearestAlarm);
+    lcd.print(" ");
+    lcd.print(nearestAlarmMyTime.get_weekday_word_short());
+  }
+  else
+  {
+    lcd.print("No alarm");
+  }
 }
 
 void display0settings(MyTime setting_now, int8_t setting_mode)
@@ -180,3 +206,5 @@ void display0settings(MyTime setting_now, int8_t setting_mode)
   lcd.write(4);
   lcd.write(4);
 }
+
+#endif

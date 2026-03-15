@@ -1,3 +1,6 @@
+#ifndef ALARM_H
+#define ALARM_H
+
 #include <Arduino.h>
 #include "MyTime.h"
 
@@ -8,7 +11,7 @@ public:
   bool bringingEnabled = false;
   bool isBringingNow = false;
   MyTime time = MyTime(0, 0, 0);
-  bool days[7];
+  bool days[7];  // WARING: First day is monday, not sunday. So days[0] is monday, days[6] is sunday.
   char a[2] = "0";
   char b[2] = "0";
   char c[2] = "0";
@@ -41,9 +44,9 @@ public:
     itoa(time.minutes % 10, d, DEC);
     strcpy(e, "");
 
-    for (char i = 0; i < 7; i++)
+    for (int8_t i = 0; i < 7; i++)
     {
-      if (days[(int)i])
+      if (days[i])
       {
         switch (i)
         {
@@ -162,3 +165,5 @@ public:
     return false;
   }
 };
+
+#endif

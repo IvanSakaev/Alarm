@@ -1,3 +1,6 @@
+#ifndef MELOD_H
+#define MELOD_H
+
 const PROGMEM int freqs[] = {
     195,
     195,
@@ -813,3 +816,5 @@ const PROGMEM float pas[] = {
     192.3075,
     1538.46,
 };
+
+#endif

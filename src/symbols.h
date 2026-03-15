@@ -1,3 +1,6 @@
+#ifndef SYMBOLS_H
+#define SYMBOLS_H
+
 byte doubledot[8] = {
     0b00000,
     0b00000,
@@ -27,3 +30,5 @@ byte leftarrow[8] = {
     0b00100,
     0b00000,
     0b00000};
+
+#endif

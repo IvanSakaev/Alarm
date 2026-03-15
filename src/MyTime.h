@@ -25,6 +25,11 @@ public:
     weekday = d;
   }
 
+  MyTime(DateTime dt)
+  {
+    fromDateTime(dt);
+  }
+
   uint8_t fromDateTime(DateTime dt)
   {
     minutes = dt.minute();
@@ -104,5 +109,36 @@ public:
     }
     return word;
   }
+
+  const char *get_weekday_word_short()
+  {
+    const char *word = "";
+    switch (weekday)
+    {
+    case 0:
+      word = "Su";
+      break;
+    case 1:
+      word = "Mo";
+      break;
+    case 2:
+      word = "Tu";
+      break;
+    case 3:
+      word = "We";
+      break;
+    case 4:
+      word = "Th";
+      break;
+    case 5:
+      word = "Fr";
+      break;
+    case 6:
+      word = "Sa";
+      break;
+    }
+    return word;
+  }
 };
+
 #endif
