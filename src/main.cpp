@@ -19,7 +19,7 @@ Encoder enc(7, 6, ENC_NO_BUTTON, TYPE2);
 GTimer<millis> time;
 GTimer<millis> sleeper;
 GTimer<millis> melod;
-GTimer<millis> alarm_off;
+GTimer<millis> zaran_off_timer;
 GTimer<millis> enc_show;
 bool isBacklight = true;
 
@@ -206,18 +206,22 @@ void loop()
     melod.stop();
   }
 
-  // if (sensor.isTriple())
-  // {
-  //   zaran_off = true;
-  //   alarm_off.start((unsigned long)1000 * 60 * 60 * 2, GTMode::Timeout);
-  //   time_changed = true;
-  // }
-
-  // if (alarm_off)
-  // {
-  //   zaran_off = false;
-  //   time_changed = true;
-  // }
+  if (sensor.isTriple())
+  {
+    if (zaran_off_timer.running())
+    {
+      zaran_off_timer.stop();
+    }
+    else
+    {
+      zaran_off_timer.start((unsigned long)1000 * 60 * 60 * 3, GTMode::Timeout);
+    }
+    time_changed = true;
+  }
+  if (zaran_off_timer)
+  {
+    time_changed = true;
+  }
 
   if (sleeper)
   {
