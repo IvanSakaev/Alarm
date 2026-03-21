@@ -28,7 +28,6 @@ void mode0(MyTime &now, bool mode_changed, bool time_changed)
   static signed char setting_mode = 0;
   static MyTime setting_now;
   bool update_display = false;
-  DateTime nearest_alarm = getNearestAlarm(now);
 
   if (mode_changed)
   {
@@ -76,7 +75,7 @@ void mode0(MyTime &now, bool mode_changed, bool time_changed)
     if (update_display)
     {
       //* display
-      display0(nearest_alarm);
+      display0(getNearestAlarm(now));
     }
   }
   else

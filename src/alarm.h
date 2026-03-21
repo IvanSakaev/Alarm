@@ -92,7 +92,7 @@ public:
   {
     if (bringingEnabled)
     {
-      if (days[d_real] || isOnce())
+      if (getDay(d_real) || isOnce())
       {
         if (time.hours == h_real)
         {
@@ -118,10 +118,9 @@ public:
 
   bool getDay(uint8_t day)
   {
-    day--; // day index from monday
-    if (day < 0)
-      day = 6;
-    return days[day];
+    if (day == 0)
+      return days[6];  // Sunday
+    return days[day - 1];  // Monday-Saturday
   }
 };
 

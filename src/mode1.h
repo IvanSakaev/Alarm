@@ -65,7 +65,11 @@ DateTime getNearestAlarm(MyTime now)
   {
     if (alar[i].bringingEnabled)
     {
-      DateTime alarm_time = alar[i].time.toDateTime();
+      // Start from today's weekday
+      DateTime alarm_time = DateTime(
+        now_time.year(), now_time.month(), now_time.day(),
+        alar[i].time.hours, alar[i].time.minutes, 0
+      );
       uint8_t day_idx = 0;
       while (alarm_time < now_time || !(alar[i].getDay(alarm_time.dayOfTheWeek()) || alar[i].isOnce()))
       {
