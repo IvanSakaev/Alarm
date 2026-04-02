@@ -34,7 +34,9 @@ bool wokeUpper(bool hard)
     isBacklight = true;
     sleeper.start(hard ? 30000 : 5000, GTMode::Timeout);
     return false;
-  } else {
+  }
+  else
+  {
     sleeper.start(30000, GTMode::Timeout);
   }
   return true;
@@ -154,26 +156,36 @@ void loop()
 
       for (uint8_t i = 0; i < 4; i++)
       {
-        if (alar[i].isBringing(now.minutes, now.hours, now.weekday))
+        if (!zaran_off_timer.running())
         {
-          if (!zaran_off && !alar[i].isBringingNow)
+          if (alar[i].isBringing(now.minutes, now.hours, now.weekday))
           {
-            wokeUpper(false);
-            melod.start(100, GTMode::Timeout);
-            alar[i].isBringingNow = true;
-            if (alar[i].isOnce())
+            if (!zaran_off && !alar[i].isBringingNow)
             {
-              alar[i].bringingEnabled = false;
+              wokeUpper(false);
+              melod.start(100, GTMode::Timeout);
+              alar[i].isBringingNow = true;
+              if (alar[i].isOnce())
+              {
+                alar[i].bringingEnabled = false;
+              }
+              break;
             }
-            break;
+          }
+          else
+          {
+            if (alar[i].isBringingNow)
+            {
+              alar[i].isBringingNow = false;
+              melod.stop();
+            }
           }
         }
         else
-        {
-          if (alar[i].isBringingNow)
+        { // Будильник должен был прозвонить, но его подавили zaran_off'ом
+          if (alar[i].isOnce())
           {
-            alar[i].isBringingNow = false;
-            melod.stop();
+            alar[i].bringingEnabled = false;
           }
         }
       }
